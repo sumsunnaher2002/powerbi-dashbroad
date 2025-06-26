@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Attendance System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    label {
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    #dashboard {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>Student Login</h2>
+
+    <div id="loginForm">
+      <label for="studentId">Student ID:</label>
+      <input type="text" id="studentId" placeholder="Enter your ID" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+
+      <button onclick="login()">Login</button>
+      <p id="message"></p>
+    </div>
+
+    <div id="dashboard">
+      <h3>Welcome, <span id="studentName"></span>!</h3>
+      <p>Your Attendance Count: <span id="attendanceCount">0</span></p>
+      <button onclick="markAttendance()">Mark Attendance</button>
+    </div>
+  </div>
+
+  <script>
+    const students = [
+      { id: "101", name: "Amina", password: "pass101" },
+      { id: "102", name: "Karim", password: "pass102" },
+      { id: "103", name: "Rahim", password: "pass103" }
+    ];
+
+    function login() {
+      const id = document.getElementById("studentId").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const message = document.getElementById("message");
+
+      const student = students.find(s => s.id === id && s.password === pass);
+
+      if (student) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("studentName").textContent = student.name;
+        sessionStorage.setItem("currentStudentId", student.id);
+
+        let count = localStorage.getItem("att_" + student.id);
+        if (!count) count = 0;
+        document.getElementById("attendanceCount").textContent = count;
+      } else {
+        message.style.color = "red";
+        message.textContent = "Invalid ID or Password";
+      }
+    }
+
+    function markAttendance() {
+      const studentId = sessionStorage.getItem("currentStudentId");
+      if (studentId) {
+        let count = localStorage.getItem("att_" + studentId);
+        count = parseInt(count || 0) + 1;
+        localStorage.setItem("att_" + studentId, count);
+        document.getElementById("attendanceCount").textContent = count;
+        alert("Attendance marked successfully!");
+      }
+    }
+  </script>
+
+</body>
+</html>
